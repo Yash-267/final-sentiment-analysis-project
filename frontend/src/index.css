@@ -1,0 +1,172 @@
+:root {
+  /* Catchy & Unique Color Palette */
+  --color-bg: #f8fafc;
+  --color-surface: #ffffff;
+  --color-primary: #0f172a; /* Deep Navy */
+  --color-secondary: #3b82f6; /* Vibrant Blue */
+  --color-accent: #f59e0b; /* Amber/Gold */
+  
+  --color-text-main: #1e293b;
+  --color-text-muted: #64748b;
+  
+  /* Sentiment Colors */
+  --sentiment-positive: #10b981; /* Emerald */
+  --sentiment-supportive: #3b82f6; /* Blue */
+  --sentiment-critical: #f59e0b; /* Amber */
+  --sentiment-concerned: #f97316; /* Orange */
+  --sentiment-negative: #ef4444; /* Red */
+
+  /* Spacing & Radius */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+
+  --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  background-color: var(--color-bg);
+  color: var(--color-text-main);
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Utilities */
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  gap: 0.5rem;
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: white;
+}
+.btn-primary:hover {
+  background: #1e293b;
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: white;
+  border: 1px solid #e2e8f0;
+  color: var(--color-text-main);
+}
+.btn-secondary:hover {
+  background: #f1f5f9;
+}
+
+.card {
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: 1.5rem;
+  border: 1px solid #e2e8f0;
+  transition: box-shadow 0.2s;
+}
+.card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+/* Headings */
+h1, h2, h3 {
+  letter-spacing: -0.025em;
+  font-weight: 700;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 1rem;
+  border-bottom: 2px solid #e2e8f0;
+  margin-bottom: 2rem;
+}
+
+.tab {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+}
+
+.tab.active {
+  color: var(--color-secondary);
+  border-bottom-color: var(--color-secondary);
+}
+
+/* Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.badge-positive { background: #d1fae5; color: #065f46; }
+.badge-supportive { background: #dbeafe; color: #1e40af; }
+.badge-critical { background: #fef3c7; color: #92400e; }
+.badge-concerned { background: #ffedd5; color: #9a3412; }
+.badge-negative { background: #fee2e2; color: #991b1b; }
+
+/* Grid Layouts */
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+
+/* Upload Area */
+.upload-area {
+  border: 2px dashed #cbd5e1;
+  border-radius: var(--radius-md);
+  padding: 3rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.upload-area:hover {
+  border-color: var(--color-secondary);
+  background: #f8fafc;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+  
+@media print { header, .no-print { display: none !important; } .container { width: 100% !important; max-width: none !important; padding: 0 !important; } body { background: white; } } 
+  
+/* Tag Cloud Tooltip */  
+.tag-item { position: relative; transition: all 0.2s; cursor: default; }  
+.tag-item:hover { transform: scale(1.1); z-index: 10; }  
+.tag-item:hover::after { content: attr(data-count); position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 5px; background: #1e293b; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; white-space: nowrap; pointer-events: none; box-shadow: 0 2px 4px rgba(0,0,0,0.1); } 
