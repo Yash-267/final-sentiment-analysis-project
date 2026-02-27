@@ -39,7 +39,7 @@ class NLPService:
         print(f"Using device: {device}")
 
         print("Loading Sentiment Model (Transformers)...")
-        # KEEPING the original Sentiment Model as requested
+        
         self.sentiment_analyzer = pipeline(
             "sentiment-analysis",
             model="tabularisai/multilingual-sentiment-analysis",
@@ -76,7 +76,7 @@ class NLPService:
         
         return self.sentiment_map.get(score_int, "Critical/Suggestive - Constructive criticism")
 
-    def _generate_extractive_summary(self, text, top_n=3):
+    def _generate_extractive_summary(self, text, top_n=None):
         import nltk
         from nltk.corpus import stopwords
         from nltk.tokenize import sent_tokenize, word_tokenize
@@ -91,6 +91,10 @@ class NLPService:
             nltk.download('punkt', quiet=True)
             nltk.download('punkt_tab', quiet=True)
             sentences = sent_tokenize(text)
+
+        # Dynamic summary length: 25% of sentences, bounded between 3 and 10 sentences
+        if top_n is None:
+            top_n = max(3, min(10, int(len(sentences) * 0.25)))
 
         if len(sentences) <= top_n:
             return text
@@ -212,5 +216,7 @@ class NLPService:
         )
 
 # Global Instance - REMOVED
+
+
 
 
