@@ -21,7 +21,7 @@ const Home = () => {
                 />
                 <FeatureCard
                     icon={<BrainCircuit size={32} color="var(--color-accent)" />}
-                    title="AI Summarization"
+                    title="Summarization"
                     desc="Generates abstractive summaries for each sentiment category to highlight core themes and concerns instantly."
                 />
                 <FeatureCard
