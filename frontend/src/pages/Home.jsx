@@ -17,7 +17,7 @@ const Home = () => {
                 <FeatureCard
                     icon={<MessageSquare size={32} color="var(--color-secondary)" />}
                     title="Sentiment Classification"
-                    desc="Automatically classifies stakeholder comments into 5 distinct categories ranging from Transformative Support to Urgent Opposition."
+                    desc="Automatically classifies stakeholder comments into 3 distinct categories ranging from Transformative Support to Urgent Opposition."
                 />
                 <FeatureCard
                     icon={<BrainCircuit size={32} color="var(--color-accent)" />}
