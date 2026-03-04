@@ -24,7 +24,7 @@ const NavBar = () => {
       <div className="tabs">
         <Link to="/" className={`tab ${isActive('/')}`}>Home</Link>
         <Link to="/analysis" className={`tab ${isActive('/analysis')}`}>Sentiment Analysis</Link>
-        <Link to="/summary" className={`tab ${isActive('/summary')}`}>AI Summary</Link>
+        <Link to="/summary" className={`tab ${isActive('/summary')}`}>Summary</Link>
         <Link to="/visuals" className={`tab ${isActive('/visuals')}`}>Visual Insights</Link>
       </div>
     </div>
