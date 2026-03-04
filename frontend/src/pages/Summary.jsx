@@ -18,7 +18,7 @@ const Summary = () => {
                 <StatCard title="Top Role" value={Object.keys(stats.top_roles)[0] || 'N/A'} color="var(--color-accent)" />
             </div>
 
-            <h2 style={{ marginBottom: '2rem' }}>AI-Generated Insights</h2>
+            <h2 style={{ marginBottom: '2rem' }}>Summary</h2>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
                 {summaries.map((s, idx) => (
