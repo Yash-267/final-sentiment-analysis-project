@@ -63,7 +63,7 @@ def upload_file(file: UploadFile = File(...)):
     try:
         contents = file.file.read()
         if file.filename.endswith('.csv'):
-            df = pd.read_csv(io.BytesIO(contents))
+            df = pd.read_csv(io.BytesIO(contents), encoding='utf-8')
         else:
             df = pd.read_excel(io.BytesIO(contents))
             
