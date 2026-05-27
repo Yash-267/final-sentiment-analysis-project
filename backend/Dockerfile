@@ -16,8 +16,8 @@ COPY requirements.txt .
 # Using --no-cache-dir to keep image size small
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Download NLTK data (punkt, stopwords) which might be needed
-RUN python -m nltk.downloader punkt stopwords
+# Download NLTK data (punkt, punkt_tab, stopwords) which might be needed
+RUN python -m nltk.downloader punkt punkt_tab stopwords
 
 # Create a user to run the app (security best practice)
 RUN useradd -m -u 1000 user

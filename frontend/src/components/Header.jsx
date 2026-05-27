@@ -1,13 +1,23 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { UploadCloud, FileText } from 'lucide-react';
+import { UploadCloud, FileText, Moon, Sun } from 'lucide-react';
 import { useData } from '../context/DataContext';
 
 const Header = () => {
     const { uploadFile, loading, error } = useData();
     const fileInputRef = useRef(null);
-
     const navigate = useNavigate();
+
+    const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+
+    useEffect(() => {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+    }, [theme]);
+
+    const toggleTheme = () => {
+        setTheme(prev => prev === 'light' ? 'dark' : 'light');
+    };
 
     const handleFileChange = async (e) => {
         const file = e.target.files[0];
@@ -17,10 +27,14 @@ const Header = () => {
                 navigate('/analysis');
             }
         }
+        // Clear the input so the same file can be uploaded again
+        if (fileInputRef.current) {
+            fileInputRef.current.value = null;
+        }
     };
 
     return (
-        <header style={{ background: 'white', borderBottom: '1px solid #e2e8f0', padding: '1rem 2rem' }}>
+        <header style={{ background: 'var(--color-surface)', borderBottom: '1px solid #e2e8f0', padding: '1rem 2rem', transition: 'background 0.2s' }}>
             <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: 'none', padding: 0 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                     <div style={{ background: 'var(--color-primary)', padding: '0.5rem', borderRadius: '8px', color: 'white' }}>
@@ -32,14 +46,24 @@ const Header = () => {
                     </div>
                 </div>
 
-                <button
-                    className="btn btn-primary"
-                    onClick={() => fileInputRef.current.click()}
-                    disabled={loading}
-                >
-                    <UploadCloud size={20} />
-                    {loading ? 'Processing...' : 'Upload Draft Legislation'}
-                </button>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <button 
+                        onClick={toggleTheme}
+                        className="btn btn-secondary"
+                        style={{ padding: '0.5rem', borderRadius: '50%' }}
+                        title="Toggle Dark Mode"
+                    >
+                        {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+                    </button>
+                    <button
+                        className="btn btn-primary"
+                        onClick={() => fileInputRef.current.click()}
+                        disabled={loading}
+                    >
+                        <UploadCloud size={20} />
+                        {loading ? 'Processing...' : 'Upload Draft Legislation'}
+                    </button>
+                </div>
                 <input
                     type="file"
                     ref={fileInputRef}

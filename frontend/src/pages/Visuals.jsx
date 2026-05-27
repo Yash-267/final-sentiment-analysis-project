@@ -5,9 +5,11 @@ import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid
 } from 'recharts';
 import { Download, FileDown } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Visuals = () => {
     const { data } = useData();
+    const navigate = useNavigate();
 
     if (!data) return <div className="container" style={{ padding: '2rem' }}>Please upload a file to view visuals.</div>;
 
@@ -71,6 +73,8 @@ const Visuals = () => {
                                     outerRadius={80}
                                     paddingAngle={5}
                                     dataKey="value"
+                                    onClick={(data) => navigate(`/analysis?sentiment=${encodeURIComponent(data.name)}`)}
+                                    style={{ cursor: 'pointer' }}
                                 >
                                     {pieData.map((entry, index) => (
                                         <Cell key={`cell-${index}`} fill={COLORS[entry.name] || '#8884d8'} />
@@ -93,7 +97,13 @@ const Visuals = () => {
                                 <XAxis type="number" />
                                 <YAxis type="category" dataKey="name" width={120} style={{ fontSize: '0.75rem' }} />
                                 <RechartsTooltip />
-                                <Bar dataKey="value" fill="var(--color-primary)" radius={[0, 4, 4, 0]} />
+                                <Bar 
+                                    dataKey="value" 
+                                    fill="var(--color-primary)" 
+                                    radius={[0, 4, 4, 0]} 
+                                    onClick={(data) => navigate(`/analysis?industry=${encodeURIComponent(data.name)}`)}
+                                    style={{ cursor: 'pointer' }}
+                                />
                             </BarChart>
                         </ResponsiveContainer>
                     </div>
@@ -120,6 +130,7 @@ const Visuals = () => {
                                 const maxVal = wordPayload[0].value;
                                 const minVal = wordPayload[wordPayload.length - 1].value;
                                 const size = 12 + ((w.value - minVal) / (maxVal - minVal || 1)) * 24;
+                                const tagColors = ['#10b981', '#3b82f6', '#f59e0b', '#f97316', '#ef4444', '#8b5cf6', '#ec4899'];
 
                                 return (
                                     <span
@@ -128,8 +139,9 @@ const Visuals = () => {
                                         data-count={`${w.value} mentions`}
                                         style={{
                                             fontSize: `${size}px`,
-                                            color: i % 2 === 0 ? 'var(--color-secondary)' : 'var(--color-primary)',
-                                            background: '#f1f5f9',
+                                            color: tagColors[i % tagColors.length],
+                                            background: 'var(--color-surface)',
+                                            border: '1px solid #cbd5e1',
                                             padding: '0.25rem 0.75rem',
                                             borderRadius: '999px',
                                             fontWeight: 500

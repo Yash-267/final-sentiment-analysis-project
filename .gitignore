@@ -14,3 +14,7 @@ dist/
 # IDE
 .vscode/
 .idea/
+
+# Database
+*.db
+*.sqlite3

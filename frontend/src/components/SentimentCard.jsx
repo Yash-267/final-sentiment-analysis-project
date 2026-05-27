@@ -1,6 +1,15 @@
 import React from 'react';
 
-const SentimentCard = ({ comment }) => {
+const SentimentCard = ({ comment, searchQuery }) => {
+    const highlightText = (text, query) => {
+        if (!query) return text;
+        const parts = text.split(new RegExp(`(${query})`, 'gi'));
+        return parts.map((part, i) => 
+            part.toLowerCase() === query.toLowerCase() 
+                ? <mark key={i} style={{ background: '#fef08a', color: '#854d0e', fontWeight: 'bold', padding: '0 2px', borderRadius: '2px' }}>{part}</mark> 
+                : part
+        );
+    };
     const getBadgeClass = (sentiment) => {
         if (sentiment.includes('Positive')) return 'badge-positive';
         if (sentiment.includes('Supportive')) return 'badge-supportive';
@@ -24,7 +33,7 @@ const SentimentCard = ({ comment }) => {
                 <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>{comment.date}</span>
             </div>
 
-            <p style={{ margin: 0, lineHeight: '1.6' }}>{comment.text}</p>
+            <p style={{ margin: 0, lineHeight: '1.6' }}>{highlightText(comment.text, searchQuery)}</p>
 
             <div style={{ borderTop: '1px solid #f1f5f9', paddingTop: '0.75rem', marginTop: '0.5rem', display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem', color: '#64748b' }}>
                 <div>

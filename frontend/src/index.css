@@ -28,6 +28,18 @@
   --font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
+[data-theme="dark"] {
+  --color-bg: #0f172a;
+  --color-surface: #1e293b;
+  --color-primary: #3b82f6; 
+  --color-secondary: #60a5fa;
+  --color-text-main: #f8fafc;
+  --color-text-muted: #cbd5e1;
+  
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.5);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.5), 0 2px 4px -1px rgba(0,0,0,0.3);
+}
+
 body {
   margin: 0;
   font-family: var(--font-family);
@@ -72,12 +84,12 @@ body {
 }
 
 .btn-secondary {
-  background: white;
-  border: 1px solid #e2e8f0;
+  background: var(--color-surface);
+  border: 1px solid #475569;
   color: var(--color-text-main);
 }
 .btn-secondary:hover {
-  background: #f1f5f9;
+  background: #334155;
 }
 
 .card {
@@ -85,7 +97,7 @@ body {
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
   padding: 1.5rem;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #334155;
   transition: box-shadow 0.2s;
 }
 .card:hover {
@@ -102,7 +114,7 @@ h1, h2, h3 {
 .tabs {
   display: flex;
   gap: 1rem;
-  border-bottom: 2px solid #e2e8f0;
+  border-bottom: 2px solid #334155;
   margin-bottom: 2rem;
 }
 
@@ -152,7 +164,7 @@ h1, h2, h3 {
 }
 .upload-area:hover {
   border-color: var(--color-secondary);
-  background: #f8fafc;
+  background: var(--color-surface);
 }
 
 /* Animations */

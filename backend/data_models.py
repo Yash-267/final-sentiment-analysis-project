@@ -13,6 +13,8 @@ class Comment(BaseModel):
     sentiment_category: Optional[str] = None # Added after analysis
     sentiment_score: Optional[float] = None
 
+    model_config = {"from_attributes": True}
+
 class AnalysisRequest(BaseModel):
     pass # Mostly handled via file upload
 
@@ -25,6 +27,8 @@ class SentimentStats(BaseModel):
 class Summary(BaseModel):
     category: str
     text: str
+
+    model_config = {"from_attributes": True}
 
 class DashboardData(BaseModel):
     comments: List[Comment]
