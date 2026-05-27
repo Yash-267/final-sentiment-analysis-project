@@ -21,6 +21,8 @@ RUN python -m nltk.downloader punkt punkt_tab stopwords
 
 # Create a user to run the app (security best practice)
 RUN useradd -m -u 1000 user
+# Give the user write permissions to the working directory so SQLite can create the db file
+RUN chown -R user:user /app
 USER user
 ENV PATH="/home/user/.local/bin:$PATH"
 
