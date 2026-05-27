@@ -16,9 +16,8 @@ export const DataProvider = ({ children }) => {
         formData.append('file', file);
 
         try {
-            // Assuming backend is at localhost:8000
-            // Connect to Live Backend
-            const res = await axios.post('http://127.0.0.1:8000/upload', formData, {
+            // Connect to Live Backend on Hugging Face
+            const res = await axios.post('https://yash267-mca-sentiment-backend.hf.space/upload', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
 
@@ -36,9 +35,9 @@ export const DataProvider = ({ children }) => {
     const fetchData = async () => {
         try {
             const [commentsRes, statsRes, sumRes] = await Promise.all([
-                axios.get('http://127.0.0.1:8000/comments'),
-                axios.get('http://127.0.0.1:8000/stats'),
-                axios.get('http://127.0.0.1:8000/summary')
+                axios.get('https://yash267-mca-sentiment-backend.hf.space/comments'),
+                axios.get('https://yash267-mca-sentiment-backend.hf.space/stats'),
+                axios.get('https://yash267-mca-sentiment-backend.hf.space/summary')
             ]);
 
             setData({
