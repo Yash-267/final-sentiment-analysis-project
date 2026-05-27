@@ -8,7 +8,7 @@ By leveraging cutting-edge Natural Language Processing (NLP), this dashboard ins
 
 ## ✨ Features
 
-- **🧠 Advanced NLP Engine**: Uses Hugging Face Transformers (`distilbert-base-uncased-finetuned-sst-2-english`) to accurately classify comment sentiments (Positive, Supportive, Critical, Concerned, Negative).
+- **🧠 Advanced NLP Engine**: Uses Hugging Face Transformers (`distilbert-base-uncased-finetuned-sst-2-english`) to accurately classify comment sentiments (Positive, Critical, Negative).
 - **📝 Automated Summarization**: Employs an NLTK-based extraction algorithm to identify key themes and frequently discussed topics.
 - **💾 Persistent Storage**: All processed feedback is securely stored in a local SQLite database using SQLAlchemy, ensuring lightning-fast retrievals without needing to re-analyze files.
 - **🎨 Premium UI/UX**: Built with React and Vite, featuring a responsive, modern aesthetic.

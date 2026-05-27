@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+pandas
+openpyxl
+torch
+transformers
+python-multipart
+# scipy is often needed for some transformers operations or wordcloud backend things
+scipy
+nltk 
+sqlalchemy
