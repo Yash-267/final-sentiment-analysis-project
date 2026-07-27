@@ -63,8 +63,6 @@ Start the FastAPI server:
 ```bash
 uvicorn main:app --reload
 ```
-*The backend will now be running on http://127.0.0.1:8000.*
-
 ### 3. Frontend Setup
 Open a **new** terminal and navigate to the frontend folder:
 ```bash
@@ -74,13 +72,11 @@ Install the Node dependencies:
 ```bash
 npm install
 ```
-*(Note: If you encounter an issue uploading the first time, you may want to ensure the `DataContext.jsx` file points to `http://127.0.0.1:8000` for local testing instead of the live Hugging Face URL).*
 
 Start the React development server:
 ```bash
 npm run dev
 ```
-*The frontend will now be running locally, usually on http://localhost:5173.*
 
 ---
 
