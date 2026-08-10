@@ -1,5 +1,6 @@
-from fastapi import FastAPI, UploadFile, File, HTTPException, Depends
+from fastapi import FastAPI, UploadFile, File, HTTPException, Depends, Header
 from fastapi.middleware.cors import CORSMiddleware
+import os
 import pandas as pd
 import io
 from contextlib import asynccontextmanager
@@ -13,6 +14,12 @@ from typing import List
 
 # Global NLP Service
 nlp_service_instance: NLPService = None
+
+API_KEY = os.getenv("API_KEY", "dev-key-change-me")
+
+def verify_api_key(x_api_key: str = Header(...)):
+    if x_api_key != API_KEY:
+        raise HTTPException(status_code=403, detail="Invalid API key")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -48,9 +55,9 @@ async def log_requests(request: Request, call_next):
 # CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], 
+    allow_origins=[os.getenv("FRONTEND_URL", "https://final-sentiment-analysis-project.vercel.app")], 
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
@@ -60,14 +67,17 @@ def read_root():
     return {"message": "MCA Sentiment Analysis API is running."}
 
 @app.post("/upload")
-def upload_file(file: UploadFile = File(...), db: Session = Depends(get_db)):
+def upload_file(file: UploadFile = File(...), db: Session = Depends(get_db), _: None = Depends(verify_api_key)):
     global nlp_service_instance
     
     if not file.filename.endswith(('.csv', '.xlsx', '.xls')):
         raise HTTPException(status_code=400, detail="Invalid file format. Please upload .csv or .excel")
 
+    MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB
     try:
         contents = file.file.read()
+        if len(contents) > MAX_FILE_SIZE:
+            raise HTTPException(status_code=413, detail="File too large.")
         if file.filename.endswith('.csv'):
             df = pd.read_csv(io.BytesIO(contents), encoding='utf-8')
         else:
@@ -119,8 +129,8 @@ def upload_file(file: UploadFile = File(...), db: Session = Depends(get_db)):
 
     except Exception as e:
         db.rollback()
-        print(f"Error processing file: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Error processing file: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error while processing file.")
 
 @app.get("/comments", response_model=List[Comment])
 def get_comments(industry: str = None, role: str = None, sentiment: str = None, db: Session = Depends(get_db)):

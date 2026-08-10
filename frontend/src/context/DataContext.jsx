@@ -18,7 +18,10 @@ export const DataProvider = ({ children }) => {
         try {
             // Connect to Live Backend on Hugging Face
             const res = await axios.post('https://yash267-mca-sentiment-backend.hf.space/upload', formData, {
-                headers: { 'Content-Type': 'multipart/form-data' }
+                headers: { 
+                    'Content-Type': 'multipart/form-data',
+                    'x-api-key': import.meta.env.VITE_API_KEY || 'dev-key-change-me'
+                }
             });
 
             // After upload, fetch all data
