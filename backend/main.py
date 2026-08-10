@@ -55,7 +55,7 @@ async def log_requests(request: Request, call_next):
 # CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[os.getenv("FRONTEND_URL", "https://final-sentiment-analysis-project.vercel.app")], 
+    allow_origins=[os.getenv("FRONTEND_URL", "https://final-sentiment-analysis-project.vercel.app"), "http://localhost:5173", "http://127.0.0.1:5173"], 
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
@@ -67,7 +67,7 @@ def read_root():
     return {"message": "MCA Sentiment Analysis API is running."}
 
 @app.post("/upload")
-def upload_file(file: UploadFile = File(...), db: Session = Depends(get_db), _: None = Depends(verify_api_key)):
+def upload_file(file: UploadFile = File(...), x_session_id: str = Header(...), db: Session = Depends(get_db), _: None = Depends(verify_api_key)):
     global nlp_service_instance
     
     if not file.filename.endswith(('.csv', '.xlsx', '.xls')):
@@ -100,9 +100,9 @@ def upload_file(file: UploadFile = File(...), db: Session = Depends(get_db), _: 
         # Run Analysis
         analysis_data = nlp_service_instance.analyze_comments(df)
         
-        # Clear existing data in database
-        db.query(DBComment).delete()
-        db.query(DBSummary).delete()
+        # Clear existing data for THIS session only
+        db.query(DBComment).filter(DBComment.session_id == x_session_id).delete()
+        db.query(DBSummary).filter(DBSummary.session_id == x_session_id).delete()
         
         # Insert new comments
         db_comments = []
@@ -112,6 +112,7 @@ def upload_file(file: UploadFile = File(...), db: Session = Depends(get_db), _: 
             c_dict = c.dict()
             if 'id' in c_dict:
                 del c_dict['id']
+            c_dict['session_id'] = x_session_id
             db_comments.append(DBComment(**c_dict))
         
         db.bulk_save_objects(db_comments)
@@ -120,6 +121,7 @@ def upload_file(file: UploadFile = File(...), db: Session = Depends(get_db), _: 
         db_summaries = []
         for s in analysis_data.summaries:
             s_dict = s.dict()
+            s_dict['session_id'] = x_session_id
             db_summaries.append(DBSummary(**s_dict))
             
         db.bulk_save_objects(db_summaries)
@@ -133,8 +135,8 @@ def upload_file(file: UploadFile = File(...), db: Session = Depends(get_db), _: 
         raise HTTPException(status_code=500, detail="Internal server error while processing file.")
 
 @app.get("/comments", response_model=List[Comment])
-def get_comments(industry: str = None, role: str = None, sentiment: str = None, db: Session = Depends(get_db)):
-    query = db.query(DBComment)
+def get_comments(x_session_id: str = Header(...), industry: str = None, role: str = None, sentiment: str = None, db: Session = Depends(get_db)):
+    query = db.query(DBComment).filter(DBComment.session_id == x_session_id)
     
     if industry:
         query = query.filter(DBComment.industry == industry)
@@ -146,12 +148,13 @@ def get_comments(industry: str = None, role: str = None, sentiment: str = None, 
     return query.all()
 
 @app.get("/summary", response_model=List[Summary])
-def get_summary(db: Session = Depends(get_db)):
-    return db.query(DBSummary).all()
+def get_summary(x_session_id: str = Header(...), db: Session = Depends(get_db)):
+    return db.query(DBSummary).filter(DBSummary.session_id == x_session_id).all()
 
 @app.get("/stats", response_model=SentimentStats)
-def get_stats(db: Session = Depends(get_db)):
-    total_comments = db.query(func.count(DBComment.id)).scalar()
+def get_stats(x_session_id: str = Header(...), db: Session = Depends(get_db)):
+    query = db.query(DBComment).filter(DBComment.session_id == x_session_id)
+    total_comments = query.with_entities(func.count(DBComment.id)).scalar()
     
     if total_comments == 0:
         return SentimentStats(
@@ -162,15 +165,15 @@ def get_stats(db: Session = Depends(get_db)):
         )
     
     # Category counts
-    categories = db.query(DBComment.sentiment_category, func.count(DBComment.id)).group_by(DBComment.sentiment_category).all()
+    categories = query.with_entities(DBComment.sentiment_category, func.count(DBComment.id)).group_by(DBComment.sentiment_category).all()
     category_counts = {c[0]: c[1] for c in categories if c[0]}
     
     # Top Industries
-    industries = db.query(DBComment.industry, func.count(DBComment.id)).group_by(DBComment.industry).order_by(func.count(DBComment.id).desc()).limit(10).all()
+    industries = query.with_entities(DBComment.industry, func.count(DBComment.id)).group_by(DBComment.industry).order_by(func.count(DBComment.id).desc()).limit(10).all()
     top_industries = {i[0]: i[1] for i in industries if i[0]}
     
     # Top Roles
-    roles = db.query(DBComment.role, func.count(DBComment.id)).group_by(DBComment.role).order_by(func.count(DBComment.id).desc()).limit(10).all()
+    roles = query.with_entities(DBComment.role, func.count(DBComment.id)).group_by(DBComment.role).order_by(func.count(DBComment.id).desc()).limit(10).all()
     top_roles = {r[0]: r[1] for r in roles if r[0]}
     
     return SentimentStats(

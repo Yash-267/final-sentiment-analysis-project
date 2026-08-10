@@ -12,6 +12,7 @@ class Comment(BaseModel):
     section: Optional[str] = None
     sentiment_category: Optional[str] = None # Added after analysis
     sentiment_score: Optional[float] = None
+    session_id: Optional[str] = None
 
     model_config = {"from_attributes": True}
 
@@ -27,6 +28,7 @@ class SentimentStats(BaseModel):
 class Summary(BaseModel):
     category: str
     text: str
+    session_id: Optional[str] = None
 
     model_config = {"from_attributes": True}
 

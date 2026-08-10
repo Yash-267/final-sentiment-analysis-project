@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 
 const DataContext = createContext();
@@ -7,6 +7,16 @@ export const DataProvider = ({ children }) => {
     const [data, setData] = useState(null); // { comments: [], stats: {}, summaries: [] }
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [sessionId, setSessionId] = useState('');
+
+    useEffect(() => {
+        let sid = sessionStorage.getItem('x-session-id');
+        if (!sid) {
+            sid = crypto.randomUUID();
+            sessionStorage.setItem('x-session-id', sid);
+        }
+        setSessionId(sid);
+    }, []);
 
     const uploadFile = async (file) => {
         setLoading(true);
@@ -20,7 +30,8 @@ export const DataProvider = ({ children }) => {
             const res = await axios.post('https://yash267-mca-sentiment-backend.hf.space/upload', formData, {
                 headers: { 
                     'Content-Type': 'multipart/form-data',
-                    'x-api-key': import.meta.env.VITE_API_KEY || 'dev-key-change-me'
+                    'x-api-key': import.meta.env.VITE_API_KEY || 'dev-key-change-me',
+                    'x-session-id': sessionId
                 }
             });
 
@@ -36,11 +47,16 @@ export const DataProvider = ({ children }) => {
     };
 
     const fetchData = async () => {
+        if (!sessionId) return;
         try {
+            const config = {
+                headers: { 'x-session-id': sessionId }
+            };
+
             const [commentsRes, statsRes, sumRes] = await Promise.all([
-                axios.get('https://yash267-mca-sentiment-backend.hf.space/comments'),
-                axios.get('https://yash267-mca-sentiment-backend.hf.space/stats'),
-                axios.get('https://yash267-mca-sentiment-backend.hf.space/summary')
+                axios.get('https://yash267-mca-sentiment-backend.hf.space/comments', config),
+                axios.get('https://yash267-mca-sentiment-backend.hf.space/stats', config),
+                axios.get('https://yash267-mca-sentiment-backend.hf.space/summary', config)
             ]);
 
             setData({

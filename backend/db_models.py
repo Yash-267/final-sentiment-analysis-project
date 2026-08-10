@@ -14,6 +14,7 @@ class DBComment(Base):
     section = Column(String, nullable=True)
     sentiment_category = Column(String, nullable=True)
     sentiment_score = Column(Float, nullable=True)
+    session_id = Column(String, index=True, nullable=False)
 
 class DBSummary(Base):
     __tablename__ = "summaries"
@@ -21,3 +22,4 @@ class DBSummary(Base):
     id = Column(Integer, primary_key=True, index=True)
     category = Column(String, index=True, nullable=False)
     text = Column(String, nullable=False)
+    session_id = Column(String, index=True, nullable=False)

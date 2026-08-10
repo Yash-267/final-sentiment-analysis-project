@@ -100,6 +100,10 @@ class NLPService:
             return text
 
         stop_words = set(stopwords.words("english"))
+        # Add custom stop words that are grammatically insignificant but commonly appear
+        custom_stop_words = {"towards", "strongly", "also", "would", "could", "may", "might", "must", "shall", "upon"}
+        stop_words = stop_words.union(custom_stop_words)
+        
         words = word_tokenize(text.lower())
         
         # Frequency map
